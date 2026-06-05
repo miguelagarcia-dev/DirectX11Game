@@ -17,7 +17,7 @@ namespace dx3d
 	
 	private:
 		void* m_handle{}; // We used this so  it doesnt expose the platform spescfic API 
-		
+	
 	};
 
 }

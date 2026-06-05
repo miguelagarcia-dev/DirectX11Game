@@ -1,6 +1,7 @@
 #pragma once
 #include <stdexcept>
 #include <memory> // allows for smart pointeers 
+
 namespace dx3d
 {
 	//forward declaration of classes in the core module. 
@@ -8,4 +9,8 @@ namespace dx3d
 	class Base;
 	class Window;
 	class Game; 
+	
+	class GraphicsEngine;
+	class RenderSystem;
+
 }
