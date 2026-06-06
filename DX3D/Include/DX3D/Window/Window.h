@@ -1,5 +1,6 @@
 #pragma once
 #include <DX3D/Core/Base.h> // we need to include the Base class header file to inherit from it
+#include <DX3D/Core/Common.h>
 
 namespace dx3d 
 {
@@ -7,6 +8,7 @@ namespace dx3d
 	{
 
 	public: 
+		explicit Window(const WindowDesc& desc); 
 		//compiler will catch mismatches in function signatures 
 		// such as if we accidentally misspelled the function name or 
 		// if the function signature does not match the base class, the c

@@ -12,8 +12,9 @@ namespace dx3d
 	class GraphicsEngine final : public Base 
 	{ 
 	public:
+
 		//constructor and destructor
-		GraphicsEngine();
+		explicit GraphicsEngine(const GraphicsEngineDesc& desc);
 		virtual ~GraphicsEngine() override; // override the destructor to ensure that it is called when the object is destroyed
 	
 	

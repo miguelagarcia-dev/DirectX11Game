@@ -1,12 +1,12 @@
 #include <DX3D/Graphics/GraphicsEngine.h>
 #include <DX3D/Graphics/RenderSystem.h>
 
-dx3d::GraphicsEngine::GraphicsEngine()
+dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.base)
 {
 	// create a new render system and assign it to the unique pointer,
 	// this will automatically manage the memory and ensure that it is
 	// properly released when the graphics engine is destroyed, 
-	m_renderSystem = std::make_unique<RenderSystem>(); 
+	m_renderSystem = std::make_unique<RenderSystem>(RenderSystemDesc{m_logger});
 
 }
 

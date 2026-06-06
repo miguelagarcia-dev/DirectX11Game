@@ -1,6 +1,6 @@
 #include <DX3D/Graphics/RenderSystem.h> 
 
-dx3d::RenderSystem::RenderSystem()
+dx3d::RenderSystem::RenderSystem(const RenderSystemDesc& desc) : Base(desc.base)
 {
 
 	D3D_FEATURE_LEVEL featureLevel{};
@@ -17,6 +17,7 @@ dx3d::RenderSystem::RenderSystem()
 	
 	if (FAILED(hr)) //failed throw this cool catcher "FAILED" 
 	{
+		getlogger().log(Logger::LogLevel::Error, "Dirext3d11 intialization failed");
 		throw std::runtime_error("Dirext3d11 intialization failed");
 	}
 
@@ -24,19 +25,6 @@ dx3d::RenderSystem::RenderSystem()
 }
 
 
-
 dx3d::RenderSystem::~RenderSystem()
 {
-//	// Properly clean up DirectX resources to avoid "Live Object" warnings
-//	if (m_d3dContext)
-//	{
-//		// Clear all bindings to ensure resources are properly released
-//		m_d3dContext->ClearState();
-//		m_d3dContext->Flush();
-//	}
-//
-//	// ComPtr will automatically release references, but explicitly nulling ensures clean shutdown
-//	m_d3dContext.Reset();
-//	m_d3dDevice.Reset();
-//
 }
