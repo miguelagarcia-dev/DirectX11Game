@@ -1,3 +1,3 @@
 # DirectX Game 
 
-Playing around wiht DirectX to learn how to create a game, all from scratch
+Playing around with DirectX to learn how to create a game, all from scratch
