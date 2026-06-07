@@ -15,7 +15,7 @@ namespace dx3d
 
 		explicit Base(const BaseDesc& desc); // called when created
 		virtual ~Base(); // called when destroyed
-		virtual Logger& getlogger() const noexcept final; //noexcept means to tell the compiler it doesnt throw excs
+		virtual Logger& getLogger() const noexcept final; //noexcept means to tell the compiler it doesnt throw excs
 	protected:
 		// this is the rule off five, we delete the copy and move constructors and
 		// assignment operators to prevent copying or moving of the object,

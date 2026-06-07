@@ -1,7 +1,7 @@
 #include <DX3D/Core/Logger.h>
 #include <iostream>
 
-dx3d::Logger::Logger(LogLevel loglevel): m_logLevel(loglevel)
+dx3d::Logger::Logger(LogLevel logLevel): m_logLevel(logLevel)
 {
 
 	std::clog << "Dirext X 3D FPS Game | C++" << "\n"; 
@@ -22,7 +22,7 @@ void dx3d::Logger::log(LogLevel level, const char* message) const // this is the
 		};
 
 
-	if (level > m_logLevel);
+	if (level > m_logLevel) return;
 	std::clog << "[DX3D " << logLevelToString(level) << "]: " << message << "\n";
 
 }

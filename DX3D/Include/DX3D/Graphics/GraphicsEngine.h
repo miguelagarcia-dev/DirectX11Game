@@ -16,10 +16,11 @@ namespace dx3d
 		//constructor and destructor
 		explicit GraphicsEngine(const GraphicsEngineDesc& desc);
 		virtual ~GraphicsEngine() override; // override the destructor to ensure that it is called when the object is destroyed
-	
-	
+		
+
+		RenderSystem& getRenderSystem() const noexcept;
 	private:
-		std::unique_ptr<RenderSystem> m_renderSystem{}; 
+		std::shared_ptr<RenderSystem> m_renderSystem{}; //turned into a shared pointer 
 
 	};
 }

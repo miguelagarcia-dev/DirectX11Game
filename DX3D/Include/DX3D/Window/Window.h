@@ -17,8 +17,10 @@ namespace dx3d
 		Window(); 
 		virtual ~Window() override; 
 	
-	private:
+	protected:
 		void* m_handle{}; // We used this so  it doesnt expose the platform spescfic API 
+		Rect m_size{}; 
+
 	
 	};
 
