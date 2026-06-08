@@ -21,8 +21,25 @@ dx3d::SwapChain::SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc
 	dxgiDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; 
 	dxgiDesc.Windowed = TRUE; 
 
-	DX3DGraphicsLogErrorAndThrow(m_factory.CreateSwapChain(&m_device, &dxgiDesc, &m_swapChain),
+	DX3DGraphicsLogThrowOnFail(m_factory.CreateSwapChain(&m_device, &dxgiDesc, &m_swapChain),
 		"CreateSwapChain failed."); 
 
+	reloadBuffers();
+
+}
+
+void dx3d::SwapChain::present(bool vsync)
+{
+	DX3DGraphicsLogThrowOnFail(m_swapChain->Present(vsync, 0), // this is a vsync and the amount vertical waits. 0 migth cause tearing 
+		"Present failed.");  
+}
+
+void dx3d::SwapChain::reloadBuffers()
+{
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> buffer{}; 
+	DX3DGraphicsLogThrowOnFail(m_swapChain->GetBuffer(0, IID_PPV_ARGS(&buffer)),
+		"GetBuffer failed.");
+	DX3DGraphicsLogThrowOnFail(m_device.CreateRenderTargetView(buffer.Get(), nullptr, &m_rtv),
+		"CreateRenderTargetViewfailed."); 
 }
 

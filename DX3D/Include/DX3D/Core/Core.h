@@ -10,10 +10,11 @@ namespace dx3d
 	class Window;
 	class Game; 
 	class GraphicsEngine;
-	class RenderSystem;
+	class GraphicsDevice;
 	class Logger; 
 	class SwapChain; 
 	class Display; 
+	class DeviceContext; 
 
 
 	using i32 = int; //representing 32 bit int 
@@ -23,5 +24,6 @@ namespace dx3d
 
 	//shared pointer, manenges the life time of a dynamical allocated object using ref counting, different from smart where it dels once out of scope
 	using SwapChainPtr = std::shared_ptr<SwapChain>;
+	using DeviceContextPtr = std::shared_ptr<DeviceContext>; 
 	// this is a new type too 
 }

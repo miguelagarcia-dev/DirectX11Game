@@ -13,11 +13,19 @@ namespace dx3d
 			Info 
 
 		};
-		
-		explicit Logger(LogLevel logLevel = LogLevel::Error); // explicit- allows for no accidental conversions through implicit means for this single aurgment constructor  
+	
+		explicit Logger(LogLevel logLevel = LogLevel::Error); // explicit- allows for no accidental conversions through implicit means for this single aurgment constructor 
+		~Logger();
+
 		void log(LogLevel level, const char* message) const; // const make sure we dont alter noting 
 
-		//copy move assigment operators should not be called, rule of zero 
+	protected:  //deleting copy move operation to not accidently repalce logger intance  
+		Logger(const Logger&) = delete;
+		Logger(Logger&&) = delete;
+		Logger& operator=(const Logger&) = delete;
+		Logger& operator=(Logger&&) = delete;
+
+	//copy move assigment operators should not be called, rule of zero 
 	private:
 		LogLevel m_logLevel = LogLevel::Error; 
 

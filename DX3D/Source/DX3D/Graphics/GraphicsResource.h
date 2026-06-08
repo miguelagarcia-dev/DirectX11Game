@@ -12,7 +12,7 @@ namespace dx3d
 	struct GraphicsResourceDesc
 	{ 
 		BaseDesc base; 
-		std::shared_ptr<const RenderSystem> renderSystem; //const is used to make sure no motifications can be done 
+		std::shared_ptr<const GraphicsDevice>  graphicsDevice; //const is used to make sure no motifications can be done 
 		ID3D11Device& device;
 		IDXGIFactory& factory;
 	};
@@ -21,7 +21,7 @@ namespace dx3d
 	public: 
 		explicit GraphicsResource(const GraphicsResourceDesc& desc):
 			Base(desc.base),
-			m_renderSystem(desc.renderSystem),
+			m_graphicsDevice(desc.graphicsDevice),
 			m_device(desc.device),
 			m_factory(desc.factory)
 		{
@@ -29,7 +29,7 @@ namespace dx3d
 
 	
 	protected: //proctected means it can only be used from dervied classes no external access.
-		std::shared_ptr<const RenderSystem> m_renderSystem;
+		std::shared_ptr<const GraphicsDevice> m_graphicsDevice;
 		ID3D11Device& m_device; 
 		IDXGIFactory& m_factory; 
 	};

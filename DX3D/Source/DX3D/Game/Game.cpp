@@ -13,7 +13,7 @@ dx3d::Game::Game(const GameDesc& desc) :
 	m_graphicsEngine = std::make_unique<GraphicsEngine>(GraphicsEngineDesc{m_logger});
 
 	//instead make a smart  pointer to manage the memory automatically and avoid manual deletion,
-	m_display = std::make_unique<Display>(DisplayDesc{ {m_logger, desc.windowSize},m_graphicsEngine->getRenderSystem()});  // this creates a new Window object and assigns it to the m_display unique pointer.
+	m_display = std::make_unique<Display>(DisplayDesc{ {m_logger, desc.windowSize},m_graphicsEngine->getGraphicsDevice()});  // this creates a new Window object and assigns it to the m_display unique pointer.
 	// old- new Window(); 
 	//// we create a new Window object and assign it to the m_display pointer.
 	//the rule of five? 
@@ -26,7 +26,7 @@ dx3d::Game::Game(const GameDesc& desc) :
 
 dx3d::Game::~Game()
 {
-	DX3DLogInfo("Game dellocation started");
+	DX3DLogInfo("Game is shutting down..");
 
 	//old-replaced with smart poiter 
 	// delete m_display; // using new? always use deletle. this is to not clog the heap with mem leaks 
@@ -37,3 +37,10 @@ dx3d::Game::~Game()
 }
 
 
+
+void dx3d::Game::onInternalUpdate()
+{		//this method isnt platform spec so we moved this into here from Win32Game
+
+	m_graphicsEngine->render(m_display->getSwapChain());
+
+}

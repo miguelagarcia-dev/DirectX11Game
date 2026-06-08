@@ -8,6 +8,10 @@ dx3d::Logger::Logger(LogLevel logLevel): m_logLevel(logLevel)
 
 }
 
+dx3d::Logger::~Logger()
+{
+}
+
 void dx3d::Logger::log(LogLevel level, const char* message) const // this is the log function 
 {
 	auto logLevelToString = [](LogLevel level) {   //we make enum to basically call int's as strings so level x is " string x". 

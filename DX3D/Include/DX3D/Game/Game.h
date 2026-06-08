@@ -17,6 +17,9 @@ namespace dx3d
 		virtual void run() final; //final means that this fuction cannot be overridden or inherinated lets us stop unintentioned extentsions
 
 	private: 
+		void onInternalUpdate(); //where we can place the coad that needs to be exucuted each frame 
+
+	private: 
 		std::unique_ptr<Logger> m_loggerPtr{};
 		// we have to worry about the unique pointer position 
 		// the last defined attbuite is the first to be deallocated and vice versa 

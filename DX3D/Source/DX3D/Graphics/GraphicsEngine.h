@@ -18,9 +18,13 @@ namespace dx3d
 		virtual ~GraphicsEngine() override; // override the destructor to ensure that it is called when the object is destroyed
 		
 
-		RenderSystem& getRenderSystem() const noexcept;
+		GraphicsDevice& getGraphicsDevice() const noexcept;
+
+		void render(SwapChain& swapChain); 
+
 	private:
-		std::shared_ptr<RenderSystem> m_renderSystem{}; //turned into a shared pointer 
+		std::shared_ptr<GraphicsDevice> m_graphicsDevice{}; //turned into a shared pointer 
+		DeviceContextPtr  m_deviceContext{};
 
 	};
 }
