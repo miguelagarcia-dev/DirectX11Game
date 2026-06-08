@@ -15,11 +15,14 @@ namespace dx3d
 		explicit GraphicsDevice(const GraphicsDeviceDesc& desc);
 		virtual ~GraphicsDevice() override;
 
+		// any time we add a new subsystem we make a shared pointer here , and make a class in core 
+		//these are method signatures 
 		SwapChainPtr createSwapChain(const SwapChainDesc& desc); 
 		DeviceContextPtr createDeviceContext(); 
+		ShaderBinaryPtr compileShader(const ShaderCompileDesc& desc); 
+		GraphicsPipelineStatePtr createGraphicsPipelineState(const GraphicsPipelineStateDesc& desc);
 
 		void executeCommandList(DeviceContext& context);
-
 	private: 
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept; 
 	private: 

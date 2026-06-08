@@ -6,7 +6,7 @@ dx3d::SwapChain::SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc
 	GraphicsResource(gDesc)
 {
 	// if we passs zero -values this will fail 
-
+	if (!desc.winHandle) DX3DLogThrowInvalidArg(" No win handler provided.");
 	DXGI_SWAP_CHAIN_DESC dxgiDesc{};
 
 	

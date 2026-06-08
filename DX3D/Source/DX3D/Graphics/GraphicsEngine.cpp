@@ -24,13 +24,36 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto& device = *m_graphicsDevice;
 	m_deviceContext = device.createDeviceContext();
 
+
+	//constexpr allows to evaluate the value at compile time, which helps us get the string size without upping runtime cost
+	//R"()" allows to keep everything within dont leave anythig out
+	constexpr char shaderSoruceCode[] =
+		R"(
+void VSMain()
+{
+}
+void PSMain()
+{
+}
+)"; 
+	constexpr char shaderSoruceName[] = "Basic";
+	constexpr auto shaderSoruceCodeSize = std::size(shaderSoruceCode); 
+
+	auto vs = device.compileShader({shaderSoruceName, shaderSoruceCode, shaderSoruceCodeSize,
+		"VSMain", ShaderType::VertexShader});
+
+	auto ps = device.compileShader({shaderSoruceName, shaderSoruceCode, shaderSoruceCodeSize,
+	"PSMain", ShaderType::PixelShader}); 
+
+	m_pipeline = device.createGraphicsPipelineState({ *vs, *ps });
+
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
 {
 }
 
-GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() const noexcept
+GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 {
 	return *m_graphicsDevice; 
 }
@@ -38,8 +61,9 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() const noexcept
 void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 {
 	auto& context = *m_deviceContext; 
-	context.clearAndSetBackBuffer(swapChain, { 1,0,0,1 });
-	
+	context.clearAndSetBackBuffer(swapChain, { 1,1,0,1 }); // this renders colors 
+	context.setGraphicsPipelineState(*m_pipeline);
+
 	auto& device = *m_graphicsDevice;
 	device.executeCommandList(context);
 	swapChain.present();

@@ -1,5 +1,6 @@
 #include <DX3D/Graphics/DeviceContext.h>
 #include <DX3D/Graphics/SwapChain.h>
+#include <DX3D/Graphics/GraphicsPipelineState.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc)
 {
@@ -15,5 +16,13 @@ void dx3d::DeviceContext::clearAndSetBackBuffer(const SwapChain& swapChain, cons
 	auto rtv = swapChain.m_rtv.Get();
 	m_context->ClearRenderTargetView(rtv, fColor);//since the swap chain class has a method thats private we cant access it so we can use a friend class. formally bypassing that locked method
 	m_context->OMGetRenderTargets(1, &rtv, nullptr);
+
+}
+
+void dx3d::DeviceContext::setGraphicsPipelineState(const GraphicsPipelineState& pipeline)
+{
+
+	m_context->VSSetShader(pipeline.m_vs.Get(), nullptr, 0);
+	m_context->PSSetShader(pipeline.m_ps.Get(), nullptr, 0);
 
 }

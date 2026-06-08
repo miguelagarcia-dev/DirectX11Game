@@ -18,6 +18,10 @@ int main()
 	{
 		return EXIT_FAILURE;
 	}
+	catch (const std::invalid_argument&)
+	{
+		return EXIT_FAILURE;
+	}
 	catch(const std::exception&)
 	{
 		return EXIT_FAILURE;
