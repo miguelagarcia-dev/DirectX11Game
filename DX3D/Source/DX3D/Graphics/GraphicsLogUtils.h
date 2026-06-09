@@ -6,7 +6,7 @@ namespace dx3d
 {
 	namespace GraphicsLogUtils
 	{
-		inline void CheckShaderCompile(Logger& logger, HRESULT hr, ID3D10Blob* errorBlob)
+		inline void CheckShaderCompile(Logger& logger, HRESULT hr, ID3DBlob* errorBlob)
 		{
 			auto errorMsg = errorBlob ? static_cast<const char*>(errorBlob->GetBufferPointer()) : nullptr; //if error blob yes get it, if not null 
 

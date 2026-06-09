@@ -41,9 +41,9 @@ dx3d::ShaderBinary::ShaderBinary(const ShaderCompileDesc& desc, const GraphicsRe
 
 }
 
-dx3d::ShaderBinaryData dx3d::ShaderBinary::getData() const noexcept
+dx3d::BinaryData dx3d::ShaderBinary::getData() const noexcept
 {
-	return //ccalled brace initializetion 
+	return //called brace initializetion 
 	{
 		m_blob->GetBufferPointer(),
 		m_blob->GetBufferSize()

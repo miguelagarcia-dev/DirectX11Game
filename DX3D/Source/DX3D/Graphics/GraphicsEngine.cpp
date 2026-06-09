@@ -4,6 +4,7 @@
 #include <DX3D/Graphics/SwapChain.h> 
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <fstream>
 
 using namespace dx3d; 
 
@@ -32,36 +33,40 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	//the SV_postion is a label that tells the gpu what it represents also know as a sementic 
 	//you need to represent the retrun type
 	//we can set color of the triangle here 
-	constexpr char shaderSoruceCode[] =
-		R"(
-float4 VSMain(float3 pos: POSITION): SV_Position
-{
-return float4(pos.xyz, 1.0);
-}
-float4 PSMain(): SV_Target
-{
-return float4(1.0, 1.0, 1.0, 1.0);
-}
-)"; 
-	constexpr char shaderSoruceName[] = "Basic";
-	constexpr auto shaderSoruceCodeSize = std::size(shaderSoruceCode); 
-
-	auto vs = device.compileShader({shaderSoruceName, shaderSoruceCode, shaderSoruceCodeSize,
-		"VSMain", ShaderType::VertexShader});
-
-	auto ps = device.compileShader({shaderSoruceName, shaderSoruceCode, shaderSoruceCodeSize,
-	"PSMain", ShaderType::PixelShader}); 
-
-	m_pipeline = device.createGraphicsPipelineState({ *vs, *ps });
-
-	const Vec3 vertexList[] = 
-	{
-		{-0.5f, -0.5f, 0.0f},
-		{0.0f, 0.5f, 0.0f},
-		{0.5f, -0.5f, 0.0f}
+	constexpr char shaderFilePath[] = "DX3D/Assets/Shaders/Basic.hlsl"; 
+	std::ifstream shaderStream(shaderFilePath);
+	if (!shaderStream) DX3DLogThrowError("shader file didnt open.");
+	std::string shaderFileData{ //this copies everything into the string shaderFileData
+		std::istreambuf_iterator<char>(shaderStream), //marks start of the file
+		std::istreambuf_iterator<char>() //marks end
 	};
 
-	m_vb = device.createVertexBuffer({ vertexList, std::size(vertexList), sizeof(Vec3)});
+	auto shaderSoruceCode = shaderFileData.c_str(); 
+	auto shaderSoruceCodeSize = shaderFileData.length(); 
+
+ 	auto vs = device.compileShader({ shaderFilePath, shaderSoruceCode, shaderSoruceCodeSize,
+		"VSMain", ShaderType::VertexShader});
+	auto ps = device.compileShader({ shaderFilePath, shaderSoruceCode, shaderSoruceCodeSize,
+		"PSMain", ShaderType::PixelShader}); 
+	auto vsSig = device.createVertexShaderSignature({ vs}); 
+
+	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
+
+	const Vertex vertexList[] =
+	{	//clockwise drawing
+		{ {-0.5f, -0.5f, 0.0f}, {1,0,0,1} }, //first point
+		{ {-0.5f, 0.5f, 0.0f }, {0,1,0,1} },
+		{ { 0.5f, 0.5f, 0.0f }, {0,0,1,1} },
+		//2ndtriangle
+		{ {0.5f, 0.5f, 0.0f} , { 0,0,1,1 } },
+		{ {0.5f, -0.5f, 0.0f}, { 1,0,1,1 } },
+		{{-0.5f, -0.5f, 0.0f}, { 1,0,0,1 } }  //same as first point
+	};
+
+
+
+
+	m_vb = device.createVertexBuffer({ vertexList, std::size(vertexList), sizeof(Vertex)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -76,7 +81,7 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 {
 	auto& context = *m_deviceContext; 
-	context.clearAndSetBackBuffer(swapChain, { 0,0,0,1 }); // this renders colors 
+	context.clearAndSetBackBuffer(swapChain, { 0.27f,00.39f,0.55f,1.0f }); // this renders colors 
 	context.setGraphicsPipelineState(*m_pipeline);
 
 	context.setViewportSize(swapChain.getSize());

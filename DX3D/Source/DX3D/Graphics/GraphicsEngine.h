@@ -1,6 +1,8 @@
 #pragma once
 #include <DX3D/Core/Core.h>
 #include <DX3D/Core/Base.h>
+#include <DX3D/Math/Vec3.h>
+#include <DX3D/Math/Vec4.h>
 
 namespace dx3d
 {
@@ -21,6 +23,13 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 
 		void render(SwapChain& swapChain); 
+
+	private: //this struct must be a prefect match in the hlsl shader code
+		struct Vertex 
+		{
+			Vec3 positon; 
+			Vec4 color;
+		};
 
 	private:
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{}; //turned into a shared pointer 

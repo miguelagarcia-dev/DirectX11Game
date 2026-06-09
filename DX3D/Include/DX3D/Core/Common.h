@@ -62,7 +62,7 @@ namespace dx3d
 		ShaderType shaderType{}; 
 	};
 
-	struct ShaderBinaryData
+	struct BinaryData
 	{
 		const void* data{};
 		size_t dataSize{};
@@ -70,7 +70,7 @@ namespace dx3d
 
 	struct GraphicsPipelineStateDesc
 	{
-		const ShaderBinary& vs;
+		const VertexShaderSignature& vs;
 		const ShaderBinary& ps;  //users of the struct would only be able to access in read only by using const
 	};
 
@@ -81,6 +81,10 @@ namespace dx3d
 		ui32 vertexSize{};
 	};
 
+	struct VertexShaderSignatureDesc
+	{
+		const ShaderBinaryPtr& vsBinary; //we want ownership to be taken by the hlsl filler
+	};
 
 	struct GameDesc
 	{
