@@ -52,7 +52,6 @@ namespace dx3d
 		PixelShader  //how the surface should be colored 
 	};
 
-
 	struct ShaderCompileDesc
 	{	
 		//passing our soruce code to be compoiled 
@@ -74,6 +73,14 @@ namespace dx3d
 		const ShaderBinary& vs;
 		const ShaderBinary& ps;  //users of the struct would only be able to access in read only by using const
 	};
+
+	struct VertexBufferDesc
+	{
+		const void* vertexList{};
+		ui32 vertexListSize{}; //the number of vertices 
+		ui32 vertexSize{};
+	};
+
 
 	struct GameDesc
 	{

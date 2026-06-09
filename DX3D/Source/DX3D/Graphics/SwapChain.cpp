@@ -1,9 +1,9 @@
 #include <DX3D/Graphics/SwapChain.h>
 
-
-
+//implmetning methods 
+//the first constructer is like the big guy with genreal things. when you make a new method you add it to the intitiaze list here.
 dx3d::SwapChain::SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc):
-	GraphicsResource(gDesc)
+	GraphicsResource(gDesc), m_size(desc.winSize)
 {
 	// if we passs zero -values this will fail 
 	if (!desc.winHandle) DX3DLogThrowInvalidArg(" No win handler provided.");
@@ -26,6 +26,11 @@ dx3d::SwapChain::SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc
 
 	reloadBuffers();
 
+}
+
+dx3d::Rect dx3d::SwapChain::getSize() const noexcept
+{
+	return m_size;
 }
 
 void dx3d::SwapChain::present(bool vsync)
