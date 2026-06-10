@@ -70,7 +70,7 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer)
 //"I don't care about the old contents, give me a fresh region if the GPU is still using it." This avoids a CPU/GPU sync stall every frame.
 void dx3d::DeviceContext::updateConstantBuffer(const ConstantBuffer& buffer, const void* data)
 {
-	if (!data) DX3DLogThrowError("Null data pointer passed to updateConstantBuffer.");
+	if (!data) DX3DLogThrowInvalidArg("Null data pointer passed to updateConstantBuffer.");
 
 	auto buf = buffer.m_buffer.Get();
 	D3D11_MAPPED_SUBRESOURCE mapped{};

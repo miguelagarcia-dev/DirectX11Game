@@ -1,5 +1,4 @@
 #pragma once
-#include <DX3D/Core/Logger.h>
 #include <d3d11.h>
 
 namespace dx3d
@@ -10,20 +9,22 @@ namespace dx3d
 		{
 			auto errorMsg = errorBlob ? static_cast<const char*>(errorBlob->GetBufferPointer()) : nullptr; //if error blob yes get it, if not null 
 
-			if (FAILED(hr)) 
-				DX3DLogThrow(logger, std::runtime_error, Logger::LogLevel::Error, errorMsg ? errorMsg :
-					"Shader compilation failed.");
+			if (FAILED(hr))
+				DX3DLogThrow(logger, std::runtime_error, Logger::LogLevel::Error,
+					"Shader compilation failed.\nDetails:\n{}", errorMsg ? errorMsg : "");
 			if (errorMsg)
-				DX3DLog(logger, Logger::LogLevel::Warning, errorMsg);
+				DX3DLog(logger, Logger::LogLevel::Warning,
+					"Shader compiled with warnings.\nDetails:\n{}", errorMsg);
+
 		}
 	}
 }
 
-#define DX3DGraphicsLogThrowOnFail(hr,message)\
+#define DX3DGraphicsLogThrowOnFail(hr, message, ...)\
 	{\
 	auto res = (hr);\
 	if (FAILED(res))\
-		DX3DLogThrowError(message);\
+		DX3DLogThrowError(message, __VA_ARGS__);\
 	}
 //calling this function easier
 #define DX3DGraphicsCheckShaderCompile(hr, errorBlob)\

@@ -10,14 +10,14 @@ struct VSOutput
 };
 
 cbuffer ConstantData : register(b0)
-{
-    float scale; //scale changes, geometry visibly grows/shrinks.
+{//
+    row_major float4x4 world;  //scale changes, geometry visibly grows/shrinks.
 };
 
-VSOutput VSMain(VSInput input) 
-{
+VSOutput VSMain(VSInput input)
+{ //Row-major vectors multiply left (v * M), W=1 ensures translation applies, W=0 would suppress it.
     VSOutput output;
-    output.position = float4(input.position * scale, 1);
+    output.position = mul(float4(input.position, 1), world);
     output.color = input.color;
     return output;
 }
