@@ -2,6 +2,7 @@
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/ConstantBuffer.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc)
 {
@@ -57,3 +58,25 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 	m_context->Draw(vertexCount, startVertexLocation);
 			//start with vertex we ask 
 }
+
+//setConstantBuffer binds to both VSSetConstantBuffers and PSSetConstantBuffers at slot 0.
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer)
+{
+	auto buf = buffer.m_buffer.Get();
+	m_context->VSSetConstantBuffers(0, 1, &buf);
+	m_context->PSSetConstantBuffers(0, 1, &buf);
+}
+
+//"I don't care about the old contents, give me a fresh region if the GPU is still using it." This avoids a CPU/GPU sync stall every frame.
+void dx3d::DeviceContext::updateConstantBuffer(const ConstantBuffer& buffer, const void* data)
+{
+	if (!data) DX3DLogThrowError("Null data pointer passed to updateConstantBuffer.");
+
+	auto buf = buffer.m_buffer.Get();
+	D3D11_MAPPED_SUBRESOURCE mapped{};
+	DX3DGraphicsLogThrowOnFail(m_context->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped),
+		"ID3D11DeviceContext::Map failed.");
+	std::memcpy(mapped.pData, data, buffer.m_size);
+	m_context->Unmap(buf, 0);
+}
+

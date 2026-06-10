@@ -2,6 +2,14 @@
 #include <stdexcept>
 #include <memory> // allows for smart pointeers 
 
+//boilerpalte dupe for deleting constc and ops
+#define dx3d_disable_copy_and_move(Class)     \
+protected:\
+    Class(const Class&) = delete;        \
+    Class& operator=(const Class&) = delete; \
+    Class(Class&&) = delete;             \
+    Class& operator=(Class&&) = delete;
+
 namespace dx3d
 {
 	//forward declaration of classes in the core module. 
@@ -20,20 +28,16 @@ namespace dx3d
 	class GraphicsPipelineState; //make sure to make allias using share pointe 
 	class VertexBuffer;
 	class VertexShaderSignature; 
+	class ConstantBuffer;
 
 	using i32 = int; //representing 32 bit int 
 	using ui32 = unsigned int; // 
 	using f32 = float;
 	using d64 = double; 
 
-	//type allias 
+	//type allias // this is a new type too 
 	//shared pointer, manenges the life time of a dynamical allocated object using ref counting, different from smart where it dels once out of scope
-	using SwapChainPtr = std::shared_ptr<SwapChain>;
-	using DeviceContextPtr = std::shared_ptr<DeviceContext>; 
-	using ShaderBinaryPtr = std::shared_ptr<ShaderBinary>;
-	using GraphicsPipelineStatePtr = std::shared_ptr<GraphicsPipelineState>;
-	using VertexBufferPtr = std::shared_ptr<VertexBuffer>;
-	using VertexShaderSignaturePtr = std::shared_ptr<VertexShaderSignature>;
+	template <typename T> using RefPtr = std::shared_ptr<T>;
+	template <typename T> using UniquePtr = std::unique_ptr<T>;
 
-	// this is a new type too 
 }

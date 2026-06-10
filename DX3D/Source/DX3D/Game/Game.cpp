@@ -5,15 +5,14 @@
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Game/Display.h>
 
-dx3d::Game::Game(const GameDesc& desc) : 
-	Base({ *std::make_unique<Logger>(desc.logLevel).release()}),
-	m_loggerPtr(&m_logger)
+dx3d::Game::Game(const GameDesc& desc)
 {	
-
-	m_graphicsEngine = std::make_unique<GraphicsEngine>(GraphicsEngineDesc{m_logger});
-
+	m_logger = std::make_unique<Logger>(desc.logLevel);
+	m_graphicsEngine = std::make_unique<GraphicsEngine>(GraphicsEngineDesc{*m_logger });
+	
+	DX3DLogInfo("DirectX C++ 3D Game");
 	//instead make a smart  pointer to manage the memory automatically and avoid manual deletion,
-	m_display = std::make_unique<Display>(DisplayDesc{ {m_logger, desc.windowSize},m_graphicsEngine->getGraphicsDevice()});  // this creates a new Window object and assigns it to the m_display unique pointer.
+	m_display = std::make_unique<Display>(DisplayDesc{ {*m_logger, desc.windowSize},m_graphicsEngine->getGraphicsDevice()});  // this creates a new Window object and assigns it to the m_display unique pointer.
 	// old- new Window(); 
 	//// we create a new Window object and assign it to the m_display pointer.
 	//the rule of five? 
@@ -36,11 +35,20 @@ dx3d::Game::~Game()
 
 }
 
+dx3d::Logger& dx3d::Game::getLogger() noexcept
+{
+	return *m_logger;
+}
 
 
 void dx3d::Game::onInternalUpdate()
 {		//this method isnt platform spec so we moved this into here from Win32Game
 
-	m_graphicsEngine->render(m_display->getSwapChain());
+	auto currentTime = std::chrono::steady_clock::now();
+	std::chrono::duration<f32> delta = currentTime - m_previousTime;
+	m_previousTime = currentTime;
+	auto deltaTime = delta.count();
+
+	m_graphicsEngine->render(m_display->getSwapChain(), deltaTime);
 
 }

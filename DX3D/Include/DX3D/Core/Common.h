@@ -83,7 +83,14 @@ namespace dx3d
 
 	struct VertexShaderSignatureDesc
 	{
-		const ShaderBinaryPtr& vsBinary; //we want ownership to be taken by the hlsl filler
+		const RefPtr<ShaderBinary>& vsBinary;//we want ownership to be taken by the hlsl filler
+	};
+
+//constbuffer Constant buffers (cbuffers) are how the CPU sends small, frequently-updated data (matrices, scalars, colors, time values)
+	struct ConstantBufferDesc 
+	{
+		const void* buffer{};
+		ui32 bufferSize{};
 	};
 
 	struct GameDesc

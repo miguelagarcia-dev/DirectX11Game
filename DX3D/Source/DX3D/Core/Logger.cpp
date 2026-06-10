@@ -4,8 +4,6 @@
 dx3d::Logger::Logger(LogLevel logLevel): m_logLevel(logLevel)
 {
 
-	std::clog << "Dirext X 3D FPS Game | C++" << "\n"; 
-
 }
 
 dx3d::Logger::~Logger()

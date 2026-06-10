@@ -5,6 +5,7 @@
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <fstream>
+#include <cmath>
 
 using namespace dx3d; 
 
@@ -27,7 +28,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto& device = *m_graphicsDevice;
 	m_deviceContext = device.createDeviceContext();
 
-
 	//constexpr allows to evaluate the value at compile time, which helps us get the string size without upping runtime cost
 	//R"()" allows to keep everything within dont leave anythig out
 	//the SV_postion is a label that tells the gpu what it represents also know as a sementic 
@@ -48,7 +48,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 		"VSMain", ShaderType::VertexShader});
 	auto ps = device.compileShader({ shaderFilePath, shaderSoruceCode, shaderSoruceCodeSize,
 		"PSMain", ShaderType::PixelShader}); 
-	auto vsSig = device.createVertexShaderSignature({ vs}); 
+	auto vsSig = device.createVertexShaderSignature({ vs }); 
 
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
@@ -64,9 +64,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	};
 
 
-
-
 	m_vb = device.createVertexBuffer({ vertexList, std::size(vertexList), sizeof(Vertex)});
+	m_cb = device.createConstantBuffer({ {}, sizeof(ConstantData) });
+
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -78,16 +78,26 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 	return *m_graphicsDevice; 
 }
 
-void dx3d::GraphicsEngine::render(SwapChain& swapChain)
+//Update happens before clearAndSetBackBuffer so we get   update ->set pipeline -> set buffers -> draw.
+void dx3d::GraphicsEngine::render(SwapChain& swapChain, f32 deltaTime)
 {
-	auto& context = *m_deviceContext; 
-	context.clearAndSetBackBuffer(swapChain, { 0.27f,00.39f,0.55f,1.0f }); // this renders colors 
-	context.setGraphicsPipelineState(*m_pipeline);
+	auto& context = *m_deviceContext;
+	auto& cb = *m_cb;
 
+	m_sum += deltaTime * 3.0f;
+	m_scale = std::abs(std::sin(m_sum));
+
+	ConstantData data{};
+	data.scale = m_scale;
+	context.updateConstantBuffer(cb, &data);
+
+	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
+	context.setGraphicsPipelineState(*m_pipeline);
 	context.setViewportSize(swapChain.getSize());
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);
+	context.setConstantBuffer(cb);
 	context.drawTriangleList(vb.getVertexListSize(), 0u);
 
 	auto& device = *m_graphicsDevice;

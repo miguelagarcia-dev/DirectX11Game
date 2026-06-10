@@ -34,24 +34,5 @@ namespace dx3d
 	};
 } 
 
-//moved from logger.h
-//define is a preprocess directive that tells the compioler to replace the instance of a name before compilation begins
-// use \ to altert that theres more macros
-//spaces after the back slash matter
+ 
 
-//updated them with new logger defs in logger.h
-
-#define DX3DLogInfo(message)\
-	DX3DLog(getLogger(), Logger::LogLevel::Info, message)
-
-#define DX3DLogWarning(message)\
-	DX3DLog(getLogger(), Logger::LogLevel::Warning, message)
-
-#define DX3DLogError(message)\
-	DX3DLog(getLogger(), Logger::LogLevel::Error, message)
-
-#define DX3DLogThrowError(message)\
-	DX3DLogThrow(getLogger(), std::runtime_error, Logger::LogLevel::Error, message)
-
-#define DX3DLogThrowInvalidArg(message)\
-	DX3DLogThrow(getLogger(), std::invalid_argument, Logger::LogLevel::Error, message)

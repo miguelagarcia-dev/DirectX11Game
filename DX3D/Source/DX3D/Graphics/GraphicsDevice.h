@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 
+//waht we add to graphics device are constructs of  GPU resource creating a factory method
 
 namespace dx3d
 {
@@ -17,12 +18,14 @@ namespace dx3d
 
 		// any time we add a new subsystem we make a shared pointer here , and make a class in core 
 		//these are method signatures 
-		SwapChainPtr createSwapChain(const SwapChainDesc& desc); 
-		DeviceContextPtr createDeviceContext(); 
-		ShaderBinaryPtr compileShader(const ShaderCompileDesc& desc); 
-		GraphicsPipelineStatePtr createGraphicsPipelineState(const GraphicsPipelineStateDesc& desc);
-		VertexBufferPtr createVertexBuffer(const VertexBufferDesc& desc);
-		VertexShaderSignaturePtr createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
+		RefPtr<SwapChain> createSwapChain(const SwapChainDesc& desc);
+		RefPtr<DeviceContext> createDeviceContext();
+		RefPtr<ShaderBinary> compileShader(const ShaderCompileDesc& desc);
+		RefPtr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDesc& desc);
+		RefPtr<VertexBuffer> createVertexBuffer(const VertexBufferDesc& desc);
+		RefPtr<VertexShaderSignature> createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
+		RefPtr<ConstantBuffer> createConstantBuffer(const ConstantBufferDesc& desc); //createVertexBuffer/compileShader are mirroed by this signatture
+
 
 		void executeCommandList(DeviceContext& context);
 	private: 

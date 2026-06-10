@@ -6,7 +6,7 @@
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/VertexShaderSignature.h>
-
+#include <DX3D/Graphics/ConstantBuffer.h>
 
 using namespace dx3d; //using namespace in header files need caution as collisions can be created 
 
@@ -49,34 +49,39 @@ dx3d::GraphicsDevice::~GraphicsDevice()
 
 //dont forget to add header file 
 
-SwapChainPtr dx3d::GraphicsDevice::createSwapChain(const SwapChainDesc& desc)
+RefPtr<SwapChain> dx3d::GraphicsDevice::createSwapChain(const SwapChainDesc& desc)
 {
 	return std::make_shared<SwapChain>(desc, getGraphicsResourceDesc());
 }
 
-DeviceContextPtr dx3d::GraphicsDevice::createDeviceContext()
+RefPtr<DeviceContext> dx3d::GraphicsDevice::createDeviceContext()
 {
 	return std::make_shared<DeviceContext>(getGraphicsResourceDesc());
 }
 
-ShaderBinaryPtr dx3d::GraphicsDevice::compileShader(const ShaderCompileDesc& desc)
+RefPtr<ShaderBinary> dx3d::GraphicsDevice::compileShader(const ShaderCompileDesc& desc)
 {
 	return std::make_shared<ShaderBinary>(desc, getGraphicsResourceDesc());
 }
 
-GraphicsPipelineStatePtr dx3d::GraphicsDevice::createGraphicsPipelineState(const GraphicsPipelineStateDesc& desc)
+RefPtr<GraphicsPipelineState> dx3d::GraphicsDevice::createGraphicsPipelineState(const GraphicsPipelineStateDesc& desc)
 {
 	return std::make_shared<GraphicsPipelineState>(desc, getGraphicsResourceDesc());
 }
 
-VertexBufferPtr dx3d::GraphicsDevice::createVertexBuffer(const VertexBufferDesc& desc)
+RefPtr<VertexBuffer> dx3d::GraphicsDevice::createVertexBuffer(const VertexBufferDesc& desc)
 {
 	return std::make_shared<VertexBuffer>(desc, getGraphicsResourceDesc());
 }
 
-VertexShaderSignaturePtr dx3d::GraphicsDevice::createVertexShaderSignature(const VertexShaderSignatureDesc& desc)
+RefPtr<VertexShaderSignature> dx3d::GraphicsDevice::createVertexShaderSignature(const VertexShaderSignatureDesc& desc)
 {
 	return std::make_shared <VertexShaderSignature>(desc, getGraphicsResourceDesc());
+}
+
+RefPtr<ConstantBuffer> dx3d::GraphicsDevice::createConstantBuffer(const ConstantBufferDesc& desc)
+{
+	return std::make_shared<ConstantBuffer>(desc, getGraphicsResourceDesc());
 }
 
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)
