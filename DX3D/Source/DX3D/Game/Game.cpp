@@ -4,6 +4,8 @@
 #include <DX3D/Graphics/GraphicsEngine.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Game/Display.h>
+#include <DX3D/Game/World.h>
+#include <DX3D/Game/GameObject.h>
 
 dx3d::Game::Game(const GameDesc& desc)
 {	
@@ -18,9 +20,15 @@ dx3d::Game::Game(const GameDesc& desc)
 	//the rule of five? 
 	//Window win{};
 	//auto w = win; //shallow copy - this just skims of the top to make a copy creating two window objects which  BAD !!
-	
+	m_world = std::make_unique<World>(WorldDesc{ {*m_logger} });
+
 	DX3DLogInfo("Game Initialized");
 
+}
+
+dx3d::World& dx3d::Game::getWorld() noexcept
+{
+	return *m_world;
 }
 
 dx3d::Game::~Game()
@@ -48,6 +56,10 @@ void dx3d::Game::onInternalUpdate()
 	std::chrono::duration<f32> delta = currentTime - m_previousTime;
 	m_previousTime = currentTime;
 	auto deltaTime = delta.count();
+	
+	onUpdate(deltaTime);
+	m_world->update(deltaTime);
+
 
 	m_graphicsEngine->render(m_display->getSwapChain(), deltaTime);
 

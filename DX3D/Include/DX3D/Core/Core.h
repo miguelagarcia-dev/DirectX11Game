@@ -31,10 +31,14 @@ namespace dx3d
 	class ConstantBuffer;
 	class IndexBuffer;
 
+	class World;
+	class GameObject;
+
 	using i32 = int; //representing 32 bit int 
 	using ui32 = unsigned int; // 
 	using f32 = float;
 	using d64 = double; 
+
 
 	//type allias // this is a new type too 
 	//shared pointer, manenges the life time of a dynamical allocated object using ref counting, different from smart where it dels once out of scope

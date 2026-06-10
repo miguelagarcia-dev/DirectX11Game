@@ -11,11 +11,16 @@ namespace dx3d
 		dx3d_disable_copy_and_move(Game)
 
 	public: 
-
 		explicit Game(const GameDesc& desc);
 		virtual ~Game();
 		virtual Logger& getLogger() noexcept final;
 		virtual void run() final; //final means that this fuction cannot be overridden or inherinated lets us stop unintentioned extentsions
+		//accesor
+		virtual World& getWorld() noexcept final;
+
+	protected:
+		virtual void onCreate() {};
+		virtual void onUpdate(f32 deltaTime) {};
 
 	private: 
 		void onInternalUpdate(); //where we can place the coad that needs to be exucuted each frame 
@@ -28,6 +33,9 @@ namespace dx3d
 		// now think about needing to manually delete something and 
 		// forgetting, a smart point helps with this since theyre auto 
 		UniquePtr<Display> m_display{};  // window instance 
+
+		UniquePtr<World> m_world{};
+
 		
 		std::chrono::steady_clock::time_point m_previousTime{};
 
