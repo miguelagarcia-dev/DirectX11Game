@@ -1,6 +1,7 @@
 #pragma once
 #include <DX3D/Core/Core.h>
 #include <DX3D/Core/Base.h>
+#include <DX3D/Graphics/IndexBuffer.h>
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
 #include <DX3D/Math/Mat4x4.h>
@@ -42,10 +43,16 @@ namespace dx3d
 		struct alignas(16) ConstantData
 		{
 			Mat4x4 world{};
+			Mat4x4 proj{};
+
 		};
-	private:
-		RefPtr<ConstantBuffer> m_cb{};
-		f32 m_rot{}, m_scale{}, m_pos{ -1.0f };
+
+	//The CPU computes the projection matrix once per frame which then is 
+	//   uploaded alongside thr GPU and the world matrix
+	private: 
+		RefPtr<ConstantBuffer> m_cb{}; 
+		RefPtr<IndexBuffer> m_ib{};  
+		f32 m_rot{}, m_scale{}, m_pos{ 0.0f };  // was -1.0f // centered cube  
 
 	};
 }

@@ -17,6 +17,8 @@ namespace dx3d
 		void drawTriangleList(ui32 vertexCount, ui32 startVertexLocation);
 		void setConstantBuffer(const ConstantBuffer& buffer);
 		void updateConstantBuffer(const ConstantBuffer& buffer, const void* data);
+		void setIndexBuffer(const IndexBuffer& buffer);
+		void drawIndexedTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation);
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};

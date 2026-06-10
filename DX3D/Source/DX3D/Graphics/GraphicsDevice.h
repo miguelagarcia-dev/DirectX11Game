@@ -25,6 +25,7 @@ namespace dx3d
 		RefPtr<VertexBuffer> createVertexBuffer(const VertexBufferDesc& desc);
 		RefPtr<VertexShaderSignature> createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
 		RefPtr<ConstantBuffer> createConstantBuffer(const ConstantBufferDesc& desc); //createVertexBuffer/compileShader are mirroed by this signatture
+		RefPtr<IndexBuffer> createIndexBuffer(const IndexBufferDesc& desc);
 
 
 		void executeCommandList(DeviceContext& context);

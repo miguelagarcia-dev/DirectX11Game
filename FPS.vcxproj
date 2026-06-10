@@ -164,6 +164,7 @@
     <ClCompile Include="DX3D\Source\DX3D\Graphics\GraphicsPipelineState.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\IndexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D\Include\DX3D\Math\Mat4x4.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\GraphicsPipelineState.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\VertexBuffer.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\IndexBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

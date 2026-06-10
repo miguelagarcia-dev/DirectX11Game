@@ -3,6 +3,7 @@
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
+#include <DX3D/Graphics/IndexBuffer.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc)
 {
@@ -78,5 +79,17 @@ void dx3d::DeviceContext::updateConstantBuffer(const ConstantBuffer& buffer, con
 		"ID3D11DeviceContext::Map failed.");
 	std::memcpy(mapped.pData, data, buffer.m_size);
 	m_context->Unmap(buf, 0);
+}
+//we need to find verts before drawing them
+void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
+{
+	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+//same as the regular draw trangle just with buffer
+void dx3d::DeviceContext::drawIndexedTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation)
+{
+	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_context->DrawIndexed(indexCount, startIndexLocation, startVertexIndex);
 }
 
