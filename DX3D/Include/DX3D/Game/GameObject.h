@@ -1,26 +1,49 @@
 #pragma once
 #include <DX3D/Core/Common.h>
 #include <DX3D/Core/Identifiable.h>
+#include <DX3D/Game/Component.h>
+
+#include <unordered_map>
 
 namespace dx3d
 {
-    class GameObject : public Identifiable
-    {
-        dx3d_typeid(GameObject)
-    public:
-        explicit GameObject(const GameObjectDesc& desc);
+	class GameObject : public Identifiable
+	{
+		dx3d_typeid(GameObject)
+	public:
+		explicit GameObject(const GameObjectDesc& desc);
 
-    protected:
-        virtual void onCreate() {}
-        virtual void onUpdate(f32 deltaTime) {}
+		template <typename T>
+		T* createOrGetComponent() requires IsRegistered<Component, T>
+		{
+			auto c = getComponent<T>();
+			if (c) return c;
+			UniquePtr<Component> cp = std::make_unique<T>(ComponentDesc{
+								{m_logger},
+								*this,
+								m_world
+				});
+			return static_cast<T*>(createComponentInternal(cp));
+		}
 
-    private:
-        size_t getWorldIndex() const noexcept;
-        void setWorldIndex(size_t index) noexcept;
-    private:
-        World& m_world;
-        size_t m_worldIndex{};
+		template <typename T>
+		T* getComponent() requires IsRegistered<Component, T>
+		{
+			return static_cast<T*>(getComponentInternal(T::GetTypeId()));
+		}
 
-        friend class World;
-    };
+		TransformComponent& getTransform() noexcept;
+	protected:
+		virtual void onCreate() {}
+		virtual void onUpdate(f32 deltaTime) {}
+	private:
+		Component* createComponentInternal(UniquePtr<Component>& component);
+		Component* getComponentInternal(size_t id);
+	private:
+		std::unordered_map<size_t, UniquePtr<Component>> m_components{};
+		TransformComponent* m_transform{};
+
+		World& m_world;
+		friend class World;
+	};
 }

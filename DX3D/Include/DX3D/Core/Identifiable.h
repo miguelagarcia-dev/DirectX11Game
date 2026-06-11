@@ -1,6 +1,7 @@
 #pragma once
 #include <DX3D/Core/Common.h>
 #include <DX3D/Core/Base.h>
+#include <type_traits>
 //enbaling a macro to use hascode a math algo to genreate unquie id's for game objects 
 
 #define dx3d_typeid(Class)           \
@@ -29,6 +30,8 @@ namespace dx3d
     };
 
     template <typename T>
-    concept HasTypeId =
-        std::is_same_v<typename T::type_id_tag, T>;
+    concept HasTypeId = std::is_same_v<typename T::type_id_tag, T>;
+
+    template <typename Base, typename Derived>
+    concept IsRegistered = std::is_base_of_v<Base, Derived>&& HasTypeId<Derived>;
 }

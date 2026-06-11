@@ -33,6 +33,9 @@ namespace dx3d
 
 	class World;
 	class GameObject;
+	class Component;
+	class TransformComponent;
+	class WorldRenderer;
 
 	using i32 = int; //representing 32 bit int 
 	using ui32 = unsigned int; // 

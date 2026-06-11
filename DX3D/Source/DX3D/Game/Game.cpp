@@ -1,7 +1,8 @@
 
 #include <DX3D/Game/Game.h>
 #include <DX3D/Window/Window.h>
-#include <DX3D/Graphics/GraphicsEngine.h>
+#include <DX3D/Graphics/GraphicsDevice.h>
+#include <DX3D/Game/WorldRenderer.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Game/Display.h>
 #include <DX3D/Game/World.h>
@@ -10,17 +11,24 @@
 dx3d::Game::Game(const GameDesc& desc)
 {	
 	m_logger = std::make_unique<Logger>(desc.logLevel);
-	m_graphicsEngine = std::make_unique<GraphicsEngine>(GraphicsEngineDesc{*m_logger });
-	
+
 	DX3DLogInfo("DirectX C++ 3D Game");
+
+	m_graphicsDevice = std::make_shared<GraphicsDevice>(GraphicsDeviceDesc{ *m_logger });
+
 	//instead make a smart  pointer to manage the memory automatically and avoid manual deletion,
-	m_display = std::make_unique<Display>(DisplayDesc{ {*m_logger, desc.windowSize},m_graphicsEngine->getGraphicsDevice()});  // this creates a new Window object and assigns it to the m_display unique pointer.
+	// this creates a new Window object and assigns it to the m_display unique pointer.
+	m_display = std::make_unique<Display>(DisplayDesc{ {*m_logger, desc.windowSize}, *m_graphicsDevice });
+	
 	// old- new Window(); 
 	//// we create a new Window object and assign it to the m_display pointer.
 	//the rule of five? 
 	//Window win{};
 	//auto w = win; //shallow copy - this just skims of the top to make a copy creating two window objects which  BAD !!
+
+
 	m_world = std::make_unique<World>(WorldDesc{ {*m_logger} });
+	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDesc{ {*m_logger},*m_graphicsDevice });
 
 	DX3DLogInfo("Game Initialized");
 
@@ -61,6 +69,6 @@ void dx3d::Game::onInternalUpdate()
 	m_world->update(deltaTime);
 
 
-	m_graphicsEngine->render(m_display->getSwapChain(), deltaTime);
+	m_worldRenderer->render(*m_world, m_display->getSwapChain(), deltaTime);
 
 }

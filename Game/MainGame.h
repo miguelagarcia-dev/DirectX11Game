@@ -8,4 +8,8 @@ public:
 protected:
     virtual void onCreate();
     virtual void onUpdate(dx3d::f32 deltaTime);
+
+private:
+    dx3d::GameObject* m_objects[9]{};
+    dx3d::f32 m_rot{}, m_scale{};
 };
