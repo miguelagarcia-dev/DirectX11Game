@@ -16,6 +16,8 @@ namespace dx3d
 		// in the development process.
 		Window(); 
 		virtual ~Window() override; 
+		dx3d::Rect getClientAreaInScreenSpace();
+
 	
 	protected:
 		void* m_handle{}; // We used this so  it doesnt expose the platform spescfic API 

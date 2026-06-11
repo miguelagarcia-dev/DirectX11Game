@@ -37,6 +37,8 @@ namespace dx3d
 	class TransformComponent;
 	class WorldRenderer;
 
+	class InputSystem;
+
 	using i32 = int; //representing 32 bit int 
 	using ui32 = unsigned int; // 
 	using f32 = float;
