@@ -36,6 +36,7 @@ namespace dx3d
 	class Component;
 	class TransformComponent;
 	class WorldRenderer;
+	class MeshComponent;
 
 	class InputSystem;
 

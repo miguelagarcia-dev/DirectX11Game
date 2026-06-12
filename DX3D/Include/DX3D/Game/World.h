@@ -16,7 +16,8 @@ namespace dx3d
         T* createGameObject() requires IsRegistered<GameObject, T>
         {
             UniquePtr<GameObject> e = std::make_unique<T>(GameObjectDesc{
-                {m_logger},
+                {m_logger}, 
+                 m_gameContext,
                 *this
                 });
             return static_cast<T*>(createGameObjectInternal(e));
@@ -36,6 +37,7 @@ namespace dx3d
         void addComponentInternal(Component& component);
         void addDirtyTransformInternal(TransformComponent& component);
         Component* const* getComponentsInternal(size_t typeId, ui32* numComponents) const noexcept;
+        GameContext m_gameContext;
 
     private:
         enum class EventType { Create = 0 };

@@ -4,6 +4,9 @@
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
 #include <DX3D/Math/Mat4x4.h>
+#include <DX3D/Graphics/DeviceContext.h>
+#include <d3d11.h>
+#include <wrl.h>
 
 namespace dx3d
 {
@@ -11,26 +14,22 @@ namespace dx3d
 	{
 	public:
 		explicit WorldRenderer(const WorldRendererDesc& desc);
-		virtual ~WorldRenderer() override; // override the destructor to ensure that it is called when the object is destroyed
+		virtual ~WorldRenderer() override;
 
 		void render(const World& world, SwapChain& swapChain, f32 deltaTime);
+
 	private:
-		struct Vertex ////this struct must be a prefect match in the hlsl shader code
-		{
-			Vec3 position;
-			Vec4 color;
-		};
 		struct alignas(16) ConstantData
 		{
 			Mat4x4 world{};
+			Mat4x4 view{};
 			Mat4x4 proj{};
 		};
 	private:
-		GraphicsDevice& m_graphicsDevice; // //turned into a shared pointer 
+		GraphicsDevice& m_graphicsDevice;
 		RefPtr<DeviceContext> m_deviceContext{};
 		RefPtr<GraphicsPipelineState> m_pipeline{};
-		RefPtr<VertexBuffer> m_vb{};
 		RefPtr<ConstantBuffer> m_cb{};
-		RefPtr<IndexBuffer> m_ib{};
+		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_sampler{};
 	};
 }

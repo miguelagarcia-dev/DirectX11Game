@@ -3,7 +3,8 @@
 #include <DX3D/Game/Component.h>
 #include <DX3D/Component/TransformComponent.h>
 
-dx3d::World::World(const WorldDesc& desc) : Base(desc.base)
+dx3d::World::World(const WorldDesc& desc) : 
+    Base(desc.base), m_gameContext(desc.gameContext)
 {
 }
 

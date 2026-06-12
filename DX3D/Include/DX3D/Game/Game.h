@@ -17,6 +17,7 @@ namespace dx3d
 		//final means that this fuction cannot be overridden or inherinated lets us stop unintentioned extentsions
 		virtual World& getWorld() noexcept final;
 		virtual Logger& getLogger() noexcept final; //accesors
+		virtual RefPtr<GraphicsDevice> getGraphicsDevice() noexcept final; //addign a refernece to device for meshcomponet
 		virtual void run() final; 
 
 		virtual InputSystem& getInputSystem() noexcept final;

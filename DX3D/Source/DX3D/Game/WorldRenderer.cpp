@@ -8,10 +8,12 @@
 #include <DX3D/Game/Component.h>
 #include <DX3D/Game/GameObject.h>
 #include <DX3D/Component/TransformComponent.h>
-#include <DX3D/Component/CubeComponent.h>
+#include <DX3D/Component/MeshComponent.h>
 #include <DX3D/Math/Vec3.h>
+#include <DX3D/Component/CameraComponent.h>
 #include <fstream>
 #include <ranges>
+
 //replacing gameengine to decouple 
 dx3d::WorldRenderer::WorldRenderer(const WorldRendererDesc& desc) : Base(desc.base), m_graphicsDevice(desc.engine)
 {
@@ -34,46 +36,24 @@ dx3d::WorldRenderer::WorldRenderer(const WorldRendererDesc& desc) : Base(desc.ba
 	auto vsSig = device.createVertexShaderSignature({ vs });
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
-	const Vertex vertexList[] =
-	{
-		{{-0.5f,-0.5f,-0.5f}, {1,0,0,1}},
-		{{-0.5f, 0.5f,-0.5f}, {0,1,0,1}},
-		{{ 0.5f, 0.5f,-0.5f}, {0,0,1,1}},
-		{{ 0.5f,-0.5f,-0.5f}, {1,0,1,1}},
-		//the triangles are traced reflectivly which is why the color are mirroed. clockwise rule
-		{{ 0.5f,-0.5f, 0.5f}, {1,0,1,1}},
-		{{ 0.5f, 0.5f, 0.5f}, {0,0,1,1}},
-		{{-0.5f, 0.5f, 0.5f}, {0,1,0,1}},
-		{{-0.5f,-0.5f, 0.5f}, {1,0,0,1}}
-	};
-
-	const ui32 indexList[] =
-	{	//clockwise
-
-		0,1,2,  2,3,0, //first and 2nd triangle
-		4,5,6,  6,7,4, //back face
-		1,6,5,  5,2,1, //top face
-		7,0,3,  3,4,7, //bottom face
-		3,2,5,  5,4,3, //right face
-		7,6,1,  1,0,7 //left face
-	};
-
-	m_vb = device.createVertexBuffer({ vertexList, std::size(vertexList), sizeof(Vertex) });
 	m_cb = device.createConstantBuffer({ {}, sizeof(ConstantData) });
-	m_ib = device.createIndexBuffer({ indexList, std::size(indexList) });
+
+	D3D11_SAMPLER_DESC sampDesc{};
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	device.m_d3dDevice->CreateSamplerState(&sampDesc, &m_sampler);
 }
 
 dx3d::WorldRenderer::~WorldRenderer() {}
 
 //Update happens before clearAndSetBackBuffer so we get   update ->set pipeline -> set buffers -> draw.
 void dx3d::WorldRenderer::render(const World& world, SwapChain& swapChain, f32 deltaTime)
-{
-	auto size = swapChain.getSize();  // orthographic camera setup
-	auto aspect = static_cast<f32>(size.width) / size.height;
-
-	auto unitsPerScreenHeight = 5.0f; //world - space height to 2 units(from - 1 to + 1)
-	auto viewHeight = unitsPerScreenHeight;
-	auto viewWidth = unitsPerScreenHeight * aspect;
+{ 
+	auto size = swapChain.getSize(); // orthographic camera setup
 
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
@@ -81,26 +61,47 @@ void dx3d::WorldRenderer::render(const World& world, SwapChain& swapChain, f32 d
 	context.setViewportSize(size);
 
 	auto numComponents = 0u;
-	auto components = world.getComponents<CubeComponent>(numComponents);
 	ConstantData data{};
 
-	for (auto i : std::views::iota(0u, numComponents))
+	// Pass 1: get view + projection from the first CameraComponent
 	{
-		auto component = components[i];
-		auto& transform = component->getGameObject().getTransform();
-
-		data = ConstantData
+		auto components = world.getComponents<CameraComponent>(numComponents);
+		for (auto i : std::views::iota(0u, numComponents))
 		{
-			transform.getWorldMatrix(),
-			Mat4x4::orthoLH(viewWidth, viewHeight, -10.0f, 10.0f)
-		};
+			auto component = components[i];
+			data.view = component->getViewMatrix();
+			component->setViewportSize(size);
+			data.proj = component->getProjectionMatrix();
+			break;
+		}
+	}
 
-		auto& cb = *m_cb;
-		context.updateConstantBuffer(cb, &data);
-		context.setVertexBuffer(*m_vb);
-		context.setConstantBuffer(cb);
-		context.setIndexBuffer(*m_ib);
-		context.drawIndexedTriangleList(m_ib->getIndexListSize(), 0u, 0u);
+	// Pass 2: render cubes
+	{
+		auto components = world.getComponents<MeshComponent>(numComponents);
+		for (auto i : std::views::iota(0u, numComponents))
+		{
+			auto component = components[i];
+			auto& transform = component->getGameObject().getTransform();
+			data.world = transform.getAffineWorldMatrix();  // getWorldMatrix() → getAffineWorldMatrix()
+
+			auto& cb = *m_cb;
+			context.updateConstantBuffer(cb, &data);
+
+			auto& vb = *component->getVertexBuffer();
+			auto& ib = *component->getIndexBuffer();
+			context.setVertexBuffer(vb);
+			context.setConstantBuffer(cb);
+			context.setIndexBuffer(ib);
+
+			if (auto& tex = component->getTexture())
+				context.setTexture(*tex);
+
+			auto sampler = m_sampler.Get();
+			m_deviceContext->m_context->PSSetSamplers(0, 1, &sampler);
+
+			context.drawIndexedTriangleList(ib.getIndexListSize(), 0u, 0u);
+		}
 	}
 
 	m_graphicsDevice.executeCommandList(context);

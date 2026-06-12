@@ -1,5 +1,6 @@
 #pragma once
 #include <DX3D/Graphics/GraphicsResource.h>
+#include <DX3D/Graphics/Texture.h>
 #include <DX3D/Core/Common.h>
 #include <DX3D/Core/Base.h>
 #include <d3d11.h>
@@ -26,11 +27,13 @@ namespace dx3d
 		RefPtr<VertexShaderSignature> createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
 		RefPtr<ConstantBuffer> createConstantBuffer(const ConstantBufferDesc& desc); //createVertexBuffer/compileShader are mirroed by this signatture
 		RefPtr<IndexBuffer> createIndexBuffer(const IndexBufferDesc& desc);
+		RefPtr<Texture> createTexture(const TextureDesc& desc);
 
 
 		void executeCommandList(DeviceContext& context);
-	private: 
-		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept; 
+	private:
+		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;
+		friend class WorldRenderer; 
 	private: 
 		//device pointer for virtual gpu, 
 		//this uses refernece content, meaning theres a counter for how many things are pointer to

@@ -29,7 +29,8 @@ dx3d::Game::Game(const GameDesc& desc)
 	//the rule of five? 
 	//Window win{};
 	//auto w = win; //shallow copy - this just skims of the top to make a copy creating two window objects which  BAD !!
-	m_world = std::make_unique<World>(WorldDesc{ {*m_logger} });
+
+	m_world = std::make_unique<World>(WorldDesc{ {*m_logger}, GameContext{*m_inputSystem} });
 	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDesc{ {*m_logger},*m_graphicsDevice });
 
 	m_inputSystem->setCursorLockArea(m_display->getClientAreaInScreenSpace());
@@ -40,6 +41,8 @@ dx3d::Game::Game(const GameDesc& desc)
 dx3d::InputSystem& dx3d::Game::getInputSystem() noexcept {return *m_inputSystem;}
 
 dx3d::World& dx3d::Game::getWorld() noexcept { return *m_world; }
+dx3d::RefPtr<dx3d::GraphicsDevice> dx3d::Game::getGraphicsDevice() noexcept {return m_graphicsDevice; }
+
 
 dx3d::Game::~Game(){ DX3DLogInfo("Game is shutting down..");
 	//old-replaced with smart poiter 

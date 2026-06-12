@@ -2,6 +2,9 @@
 #include <DX3D/Core/Core.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Math/Rect.h>
+#include <DX3D/Math/Vec2.h>
+#include <DX3D/Math/Vec3.h>
+#include <DX3D/Math/Vec4.h>
 
 //these are descriptors expaling what something will have 
 namespace dx3d
@@ -82,6 +85,14 @@ namespace dx3d
 		ui32 vertexSize{};
 	};
 
+	struct TextureDesc
+	{
+		const void* data{};
+		ui32 width{};
+		ui32 height{};
+		ui32 rowPitch{};
+	};
+
 	struct VertexShaderSignatureDesc
 	{
 		const RefPtr<ShaderBinary>& vsBinary;//we want ownership to be taken by the hlsl filler
@@ -99,6 +110,11 @@ namespace dx3d
 		const ui32* indexList{};
 		ui32 indexListSize{};
 	};
+	
+	struct GameContext
+	{
+		InputSystem& input;
+	};
 
 	struct GameDesc
 	{
@@ -109,21 +125,35 @@ namespace dx3d
 	struct WorldDesc
 	{
 		BaseDesc base;
+		GameContext gameContext;
 	};
 
 	struct GameObjectDesc
 	{
 		BaseDesc base;
+		GameContext gameContext;
 		World& world;
 	};
 
-	struct ComponentDesc
+	struct ComponentDesc //adding attrubites to the struct adds to the connected components
 	{
 		BaseDesc base;
 		GameObject& object;
 		World& world;
 	};
 
+	struct Vertex ////this struct must be a prefect match in the hlsl shader code
+	{
+		Vec3 pos;
+		Vec4 col;
+		Vec2 uv;
+	};
+	struct MeshComponentDesc
+	{
+		ComponentDesc base;
+		std::shared_ptr<GraphicsDevice> graphicsDevice;
+	};
+	
 	enum class KeyCode
 	{
 		Unknown = 0,
@@ -147,4 +177,5 @@ namespace dx3d
 		BaseDesc base;
 	};
 
+	
 }

@@ -90,6 +90,11 @@ RefPtr<IndexBuffer> dx3d::GraphicsDevice::createIndexBuffer(const IndexBufferDes
 	return std::make_shared<IndexBuffer>(desc, getGraphicsResourceDesc());
 }
 
+RefPtr<Texture> dx3d::GraphicsDevice::createTexture(const TextureDesc& desc)
+{
+	return std::make_shared<Texture>(desc, getGraphicsResourceDesc());
+}
+
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)
 {
 	Microsoft::WRL::ComPtr<ID3D11CommandList> list{}; 

@@ -6,9 +6,6 @@ dx3d::InputSystem::InputSystem(const InputSystemDesc& desc) : Base(desc.base)
 {
 }
 
-dx3d::InputSystem::~InputSystem()
-{
-}
 
 bool dx3d::InputSystem::isKeyDown(KeyCode key) const
 {

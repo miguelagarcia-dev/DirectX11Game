@@ -4,6 +4,7 @@
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/IndexBuffer.h>
+#include <DX3D/Graphics/Texture.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc)
 {
@@ -91,5 +92,11 @@ void dx3d::DeviceContext::drawIndexedTriangleList(ui32 indexCount, ui32 startVer
 {
 	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_context->DrawIndexed(indexCount, startIndexLocation, startVertexIndex);
+}
+
+void dx3d::DeviceContext::setTexture(const Texture& texture)
+{
+	auto srv = texture.getTexture();
+	m_context->PSSetShaderResources(0, 1, &srv);
 }
 
